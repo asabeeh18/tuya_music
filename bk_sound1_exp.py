@@ -7,8 +7,6 @@ import numpy
 from Queue import Queue
 import struct
 import math
-import socket
-import sys
 
 import pyaudio
 import wave
@@ -18,8 +16,7 @@ THRESHOLD = 500
 CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
 RATE = 44100
-VARIANCE = 500
-MID = (1000-VARIANCE)
+
 q = Queue()
 lock = threading.Lock()
 
@@ -113,39 +110,15 @@ def record():
     print()
     print("break_now")
     data = stream.read(CHUNK_SIZE)
-    
-    #Server stuff
-    # Create a TCP/IP socket
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # Bind the socket to the port
-    server_address = ('localhost', 12344)
-    print (sys.stderr, 'starting up on %s port %s' % server_address)
-    sock.bind(server_address)
-    # Listen for incoming connections
-    sock.listen(1)
-    
-    # Wait for a connection
-    print (sys.stderr, 'waiting for a connection')
-    connection, client_address = sock.accept()
-    print(sys.stderr, 'connection from', client_address)
-    
-    prev_rms = 0
-    while True:
+    # play stream (3)
+    while len(data) > 0:
+        
         data = stream.read(CHUNK_SIZE)
-        rms = get_rms(data)
-        if prev_rms < rms:
-            linear_rms=str(int(MID+(rms*VARIANCE)))
-        else:
-            linear_rms=str(int(MID-(rms*VARIANCE)))
-        prev_rms=rms
+        linear_rms=get_rms(data)
         #blockLinearRms= numpy.sqrt(numpy.mean(data**2)) # Linear value between 0 -> 1
         #blockLogRms = 20 * math.log10(blockLinearRms) # Decibel (dB value) between 0 dB -> -inf dB   
         print(linear_rms)
-        connection.sendall(linear_rms.encode())
-        data = connection.recv(4)
-        print(data)
-
-    print('bahar aagye')
+    
     sample_width = p.get_sample_size(FORMAT)
     stream.stop_stream()
     stream.close()
@@ -178,13 +151,7 @@ def record_to_file():
 if __name__ == '__main__':
     t = threading.Thread(target=record_to_file)
     t.daemon=True
-    try:
-        t.start()
-    except (e):
-        print('exception me aagye')
-        print(e)
-        cleanup_stop_thread();
-        sys.exit()
+    t.start()
     print("You're live! Press Enter to finish.")
     input()
     q.put(1)
