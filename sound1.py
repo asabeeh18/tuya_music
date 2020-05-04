@@ -137,7 +137,7 @@ def record():
             linear_rms=str(1000)
             #linear_rms=str(int(MID+(rms*VARIANCE)))
         else:
-            linear_rms=str(0)
+            linear_rms=str(10)
             #linear_rms=str(int(MID-(rms*VARIANCE)))
         prev_rms=rms
         #blockLinearRms= numpy.sqrt(numpy.mean(data**2)) # Linear value between 0 -> 1

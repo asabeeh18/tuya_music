@@ -1,9 +1,9 @@
 const TuyAPI = require('tuyapi');
 var net = require('net');
-
+const cred = require('./creds.js');
 const device = new TuyAPI({
-id: '24468741d8f15b94491a',
-key: '45cda56426fda7a0'});
+id: cred.id,
+key: cred.key});
 var client = new net.Socket();
 
 async function initAll()
