@@ -134,9 +134,11 @@ def record():
         data = stream.read(CHUNK_SIZE)
         rms = get_rms(data)
         if prev_rms < rms:
-            linear_rms=str(int(MID+(rms*VARIANCE)))
+            linear_rms=str(1000)
+            #linear_rms=str(int(MID+(rms*VARIANCE)))
         else:
-            linear_rms=str(int(MID-(rms*VARIANCE)))
+            linear_rms=str(0)
+            #linear_rms=str(int(MID-(rms*VARIANCE)))
         prev_rms=rms
         #blockLinearRms= numpy.sqrt(numpy.mean(data**2)) # Linear value between 0 -> 1
         #blockLogRms = 20 * math.log10(blockLinearRms) # Decibel (dB value) between 0 dB -> -inf dB   

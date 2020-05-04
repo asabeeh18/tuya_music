@@ -14,20 +14,20 @@ async function initAll()
     await client.connect(12344, '127.0.0.1');
     console.log('socket inited-all init')
 }
-async function goAhead(data)
+function goAhead(data)
 {
     data = parseInt(data,10)
     console.log('Received: ' + data);
     //await device.set({dps:22,set:data});
     //status = await device.get({dps: 22});
-    await device.set({dps:22,set:data});
+    device.set({dps:22,set:data});
 }
 initAll();
 console.log('device inited_out');
 console.log('go done')
 
-client.on('data',async function(data) {
-    await goAhead(data);
+client.on('data',function(data) {
+    goAhead(data);
     client.write('next');
     console.log('next');
 });
